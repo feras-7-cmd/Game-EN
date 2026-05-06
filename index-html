@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Day in the Life of a Maintenance Engr - King Salman Specialist Hospital | Maintenance Training Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+    --green:#00c853;--red:#ff1744;--yellow:#ffd600;--blue:#2979ff;--purple:#7b1fa2;
+    --bg:#0a0e1a;--card:#131929;--card2:#1a2236;--border:#2a3a5a;--text:#e8eaf6;--muted:#8899bb;
+    --shadow:0 8px 32px rgba(0,0,0,0.3);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Roboto','Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;
+    background-image:radial-gradient(ellipse at 20% 20%,rgba(41,121,255,.07) 0%,transparent 60%),
+                     radial-gradient(ellipse at 80% 80%,rgba(0,200,83,.05) 0%,transparent 60%),
+                     radial-gradient(ellipse at 50% 10%,rgba(123,31,162,.04) 0%,transparent 70%);}
+
+.particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.particle{position:absolute;width:2px;height:2px;background:var(--blue);border-radius:50%;animation:floatup linear infinite;}
+@keyframes floatup{0%{transform:translateY(100vh) translateX(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-10vh) translateX(var(--dx));opacity:0}}
+
+.wrapper{position:relative;z-index:1;max-width:800px;margin:0 auto;padding:20px 16px 80px;}
+
+.header{text-align:center;padding:30px 20px 20px;margin-bottom:20px;border-bottom:1px solid var(--border);position:relative;}
+.header::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--green),var(--purple));}
+.hosp-badge{display:inline-flex;align-items:center;gap:12px;background:linear-gradient(135deg,#1a2236,#0f1728);border:1px solid var(--border);border-radius:50px;padding:12px 24px;font-size:14px;color:var(--muted);margin-bottom:15px;box-shadow:var(--shadow);}
+.hosp-badge span{color:var(--blue);font-weight:800;font-size:16px;}
+.main-title{font-family:'Tajawal',sans-serif;font-size:clamp(28px,6vw,42px);font-weight:900;background:linear-gradient(135deg,#e8eaf6 0%,var(--blue) 40%,var(--green) 70%,var(--purple) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:8px;letter-spacing:-0.5px;}
+.sub-title{color:var(--muted);font-size:15px;font-weight:600;line-height:1.6;}
+
+.screen{display:none;}.screen.active{display:block;}
+
+/* NAME SCREEN */
+.name-card{background:var(--card);border:1px solid var(--border);border-radius:25px;padding:45px 30px;text-align:center;box-shadow:var(--shadow);}
+.name-emo{font-size:70px;margin-bottom:18px;animation:bounce 2s infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.name-ttl{font-family:'Tajawal',sans-serif;font-size:28px;font-weight:900;margin-bottom:12px;}
+.name-sub{color:var(--muted);font-size:15px;font-weight:600;line-height:1.8;margin-bottom:30px;}
+.name-in{width:100%;background:var(--card2);border:2px solid var(--border);border-radius:16px;padding:18px 24px;font-family:'Roboto',sans-serif;font-size:18px;font-weight:700;color:var(--text);text-align:center;outline:none;transition:all .3s;margin-bottom:10px;}
+.name-in:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(41,121,255,.2);}
+.name-in::placeholder{color:var(--muted);font-weight:600;}
+.name-hint{color:var(--muted);font-size:13px;margin-bottom:25px;}
+.rules-box{background:rgba(255,255,255,.04);border-radius:16px;padding:20px;margin-bottom:25px;text-align:left;border:1px solid rgba(255,255,255,.05);}
+.rule{display:flex;align-items:flex-start;gap:12px;font-size:14px;font-weight:600;color:var(--muted);margin-bottom:12px;line-height:1.7;}
+.rule:last-child{margin-bottom:0;}
+.rule-ico{min-width:20px;height:20px;border-radius:50%;background:var(--blue);color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;}
+.start-btn{width:100%;background:linear-gradient(135deg,var(--blue),#1565c0);border:none;border-radius:16px;color:white;font-family:'Roboto',sans-serif;font-size:18px;font-weight:800;padding:18px;cursor:pointer;transition:all .3s;box-shadow:var(--shadow);}
+.start-btn:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 15px 40px rgba(41,121,255,.5);}
+.start-btn:disabled{opacity:.5;cursor:not-allowed;}
+
+/* SCORE PANEL */
+.score-panel{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:15px 12px;text-align:center;transition:all .3s;}
+.sc:hover{transform:translateY(-2px);}
+.sc .l{font-size:12px;color:var(--muted);font-weight:700;margin-bottom:4px;}
+.sc .v{font-size:26px;font-weight:900;font-family:'Tajawal',sans-serif;}
+.sc-b .v{color:var(--blue);}.sc-g .v{color:var(--green);}.sc-y .v{color:var(--yellow);}
+
+/* CHAOS METER */
+.chaos-sec{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 22px;margin-bottom:18px;box-shadow:var(--shadow);}
+.chaos-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.chaos-lbl{font-size:14px;font-weight:800;color:var(--text);}
+.chaos-pct{font-size:14px;font-weight:800;}
+.chaos-bg{background:rgba(255,255,255,.08);border-radius:50px;height:14px;overflow:hidden;}
+.chaos-fill{height:100%;border-radius:50px;transition:width .8s cubic-bezier(.4,0,.2,1),background .8s;position:relative;overflow:hidden;}
+.chaos-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);animation:shim 2.5s infinite;}
+@keyframes shim{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.chaos-emos{display:flex;gap:8px;margin-top:10px;justify-content:center;}
+.ce{font-size:22px;transition:all .4s;filter:grayscale(1);opacity:.4;}
+.ce.on{filter:grayscale(0);opacity:1;animation:ceshk .5s;transform:scale(1.2);}
+@keyframes ceshk{0%,100%{transform:rotate(0) scale(1.2)}25%{transform:rotate(-15deg) scale(1.3)}75%{transform:rotate(15deg) scale(1.3)}}
+
+/* PROGRESS DOTS */
+.pdots{display:flex;justify-content:center;gap:12px;margin-bottom:18px;}
+.dot{width:14px;height:14px;border-radius:50%;background:var(--border);transition:all .4s;cursor:pointer;}
+.dot.done{background:var(--green);transform:scale(1.4);}.dot.active{background:var(--blue);transform:scale(1.6);box-shadow:0 0 20px var(--blue);}
+
+/* SCENARIO CARD */
+.sc-card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:30px 25px;margin-bottom:18px;position:relative;overflow:hidden;box-shadow:var(--shadow);}
+.sc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--blue),var(--green),var(--purple));}
+.sc-badge{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,rgba(41,121,255,.15),rgba(0,200,83,.1));border:1px solid rgba(41,121,255,.3);color:var(--blue);border-radius:50px;padding:8px 18px;font-size:13px;font-weight:800;margin-bottom:15px;}
+.sc-emo{font-size:55px;display:block;text-align:center;margin-bottom:18px;animation:pemo 3s infinite;}
+@keyframes pemo{0%,100%{transform:scale(1) rotate(0)}33%{transform:scale(1.1) rotate(5deg)}66%{transform:scale(1.1) rotate(-5deg)}}
+.sc-txt{font-size:16px;font-weight:700;line-height:1.8;text-align:center;background:rgba(255,255,255,.02);padding:20px;border-radius:15px;border-left:3px solid var(--blue);}
+
+/* OPTIONS */
+.opts{display:flex;flex-direction:column;gap:12px;margin-bottom:18px;}
+.opt{background:var(--card2);border:2px solid var(--border);border-radius:18px;padding:20px 22px;text-align:left;cursor:pointer;transition:all .3s;display:flex;align-items:flex-start;gap:15px;font-family:'Roboto',sans-serif;font-size:15px;color:var(--text);font-weight:700;line-height:1.7;}
+.opt:hover:not(:disabled){border-color:rgba(41,121,255,.5);background:rgba(41,121,255,.08);transform:translateX(4px);}
+.opt:disabled{cursor:default;opacity:.6;}
+.opt.ok{border-color:var(--green)!important;background:linear-gradient(135deg,rgba(0,200,83,.15),rgba(0,200,83,.08))!important;animation:okpop .5s;}
+.opt.ng{border-color:var(--red)!important;background:linear-gradient(135deg,rgba(255,23,68,.15),rgba(255,23,68,.08))!important;animation:ngshk .6s;}
+@keyframes okpop{0%{transform:scale(1) translateX(0)}50%{transform:scale(1.05) translateX(2px)}100%{transform:scale(1) translateX(2px)}}
+@keyframes ngshk{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(8px)}40%,80%{transform:translateX(-8px)}}
+.opt-num{min-width:40px;height:40px;border-radius:12px;background:rgba(41,121,255,.15);color:var(--blue);border:2px solid rgba(41,121,255,.3);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;flex-shrink:0;}
+.opt.ok .opt-num{background:linear-gradient(135deg,rgba(0,200,83,.3),rgba(0,200,83,.2));color:var(--green);border-color:var(--green);animation:pulse 1s infinite;}
+.opt.ng .opt-num{background:linear-gradient(135deg,rgba(255,23,68,.3),rgba(255,23,68,.2));color:var(--red);border-color:var(--red);}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,200,83,.7)}50%{box-shadow:0 0 0 10px rgba(0,200,83,0)}}
+
+/* FEEDBACK */
+.fb{border-radius:20px;padding:25px 24px;margin-bottom:18px;display:none;animation:sup .4s cubic-bezier(.4,0,.2,1);box-shadow:var(--shadow);}
+.fb.show{display:block;}.fb-ok{background:linear-gradient(135deg,rgba(0,200,83,.12),rgba(0,200,83,.08));border:2px solid rgba(0,200,83,.4);}.fb-ng{background:linear-gradient(135deg,rgba(255,23,68,.12),rgba(255,23,68,.08));border:2px solid rgba(255,23,68,.4);}
+@keyframes sup{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.fb-emo{font-size:36px;margin-bottom:8px;}.fb-com{font-size:16px;font-weight:800;line-height:1.7;margin-bottom:12px;}
+.fb-tip{background:rgba(255,255,255,.06);border-radius:12px;padding:14px 18px;font-size:13px;color:var(--text);font-weight:700;display:flex;gap:10px;align-items:flex-start;border-right:4px solid var(--blue);}
+
+/* NEXT BUTTON */
+.nxt{width:100%;padding:18px;background:linear-gradient(135deg,var(--blue),#1565c0);border:none;border-radius:16px;color:white;font-family:'Roboto',sans-serif;font-size:17px;font-weight:800;cursor:pointer;transition:all .3s;display:none;margin-bottom:18px;box-shadow:var(--shadow);}
+.nxt.show{display:block;}.nxt:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(41,121,255,.5);}
+
+/* CHAOS ALERT */
+.calert{background:linear-gradient(135deg,rgba(255,23,68,.2),rgba(255,152,0,.15));border:2px solid rgba(255,23,68,.5);border-radius:20px;padding:25px;text-align:center;margin-bottom:18px;animation:sup .5s;display:none;box-shadow:0 10px 40px rgba(255,23,68,.3);}
+.calert.show{display:block;}
+
+/* END SCREEN */
+.end-card{background:var(--card);border:1px solid var(--border);border-radius:25px;padding:40px 30px;text-align:center;display:none;animation:sup .6s;box-shadow:var(--shadow);}
+.end-card.show{display:block;}
+.end-trophy{font-size:75px;margin-bottom:20px;animation:bnc 1.5s infinite;}
+@keyframes bnc{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+.ttl-badge{display:inline-block;background:linear-gradient(135deg,rgba(255,214,0,.2),rgba(255,152,0,.15));border:2px solid rgba(255,214,0,.4);border-radius:50px;padding:12px 30px;font-size:22px;font-weight:900;color:var(--yellow);margin-bottom:15px;font-family:'Tajawal',sans-serif;box-shadow:var(--shadow);}
+.end-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:25px 0;}
+.estat{background:rgba(255,255,255,.06);border-radius:16px;padding:18px 12px;transition:all .3s;}
+.estat:hover{transform:translateY(-3px);}
+.esv{font-size:32px;font-weight:900;font-family:'Tajawal',sans-serif;}
+.esl{font-size:12px;color:var(--muted);font-weight:700;}
+.esg{color:var(--green);}.esy{color:var(--yellow);}.esr{color:var(--red);}
+.end-tip-box{background:linear-gradient(135deg,rgba(41,121,255,.12),rgba(123,31,162,.1));border:1px solid rgba(41,121,255,.3);border-radius:16px;padding:20px 24px;font-size:15px;font-weight:700;color:var(--text);margin-bottom:25px;line-height:1.8;border-left:4px solid var(--blue);}
+.end-btns{display:flex;flex-direction:column;gap:12px;}
+.replay-btn{background:linear-gradient(135deg,var(--green),#00a084);border:none;border-radius:16px;color:white;font-family:'Roboto',sans-serif;font-size:17px;font-weight:800;padding:18px;cursor:pointer;transition:all .3s;box-shadow:var(--shadow);}
+.replay-btn:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,200,83,.5);}
+.lb-open-btn{background:var(--card2);border:2px solid var(--border);border-radius:16px;color:var(--text);font-family:'Roboto',sans-serif;font-size:16px;font-weight:800;padding:16px;cursor:pointer;transition:all .3s;}
+.lb-open-btn:hover{border-color:var(--yellow);background:rgba(255,214,0,.1);transform:translateY(-2px);}
+.share-btn{background:linear-gradient(135deg,var(--purple),#6a1b9a);border:none;border-radius:16px;color:white;font-family:'Roboto',sans-serif;font-size:16px;font-weight:800;padding:16px;cursor:pointer;transition:all .3s;margin-top:10px;}
+.share-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(123,31,162,.5);}
+
+/* LEADERBOARD */
+.lb-card{background:var(--card);border:1px solid var(--border);border-radius:25px;padding:30px 25px;}
+.lb-hdr{display:flex;align-items:center;gap:18px;margin-bottom:25px;}
+.lb-ico{font-size:45px;}.lb-title{font-family:'Tajawal',sans-serif;font-size:26px;font-weight:900;color:var(--yellow);}
+.lb-sub{font-size:13px;color:var(--muted);font-weight:700;}
+.lb-empty{text-align:center;padding:50px;color:var(--muted);font-size:16px;font-weight:700;}
+.lb-empty-emo{font-size:55px;margin-bottom:15px;}
+.lb-row{display:flex;align-items:center;gap:15px;background:var(--card2);border:1px solid var(--border);border-radius:18px;padding:18px 22px;margin-bottom:12px;transition:all .3s;}
+.lb-row:hover{transform:translateX(5px);border-color:rgba(255,214,0,.4);}
+.lb-row.me{border-color:rgba(255,214,0,.6);background:linear-gradient(135deg,rgba(255,214,0,.08),rgba(255,214,0,.04));box-shadow:0 0 20px rgba(255,214,0,.3);}
+.lb-rank{font-size:24px;min-width:45px;text-align:center;font-weight:900;color:var(--yellow);}
+.lb-info{flex:1;}
+.lb-name{font-size:16px;font-weight:800;}
+.lb-meta{font-size:12px;color:var(--muted);font-weight:700;margin-top:4px;}
+.lb-score-box{background:linear-gradient(135deg,rgba(41,121,255,.25),rgba(0,200,83,.2));border:1px solid rgba(41,121,255,.4);border-radius:12px;padding:8px 18px;text-align:center;box-shadow:0 4px 15px rgba(41,121,255,.2);}
+.lb-snum{font-size:24px;font-weight:900;font-family:'Tajawal',sans-serif;color:var(--blue);}
+.lb-slbl{font-size:11px;color:var(--text);font-weight:800;}
+.back-btn{width:100%;background:var(--card2);border:2px solid var(--border);border-radius:16px;color:var(--text);font-family:'Roboto',sans-serif;font-size:16px;font-weight:800;padding:16px;cursor:pointer;transition:all .3s;margin-top:18px;}
+.back-btn:hover{border-color:var(--blue);background:rgba(41,121,255,.1);transform:translateY(-2px);}
+
+.sponsor-footer{text-align:center;margin-top:30px;padding:20px 15px;border-top:1px dashed var(--border);font-family:'Tajawal',sans-serif;font-weight:700;color:#b9c7d9;background:rgba(0,0,0,0.15);border-radius:25px;backdrop-filter:blur(4px);}
+.sponsor-footer span.main-sponsor{color:#ffd966;font-size:18px;letter-spacing:1px;}
+.sponsor-footer small{display:block;margin-top:8px;font-size:12px;opacity:0.7;}
+
+@media(max-width:480px){
+    .wrapper{padding:15px 12px 70px;}
+    .score-panel{gap:10px;}
+    .sc .v{font-size:22px;}
+    .sc-txt{font-size:15px;line-height:1.6;padding:15px;}
+    .opt{font-size:14px;padding:16px 18px;}
+    .name-card{padding:30px 20px;}
+}
+</style>
+</head>
+<body>
+<div class="particles" id="particles"></div>
+<div class="wrapper">
+    <div class="header">
+        <div class="hosp-badge">
+            <span>🏥 King Salman Specialist Hospital</span> · Taif
+        </div>
+        <div class="main-title">A Day in the Life of a Maintenance Engr</div>
+        <div class="sub-title">Interactive Training Game for Hospital Staff</div>
+    </div>
+
+    <!-- NAME SCREEN -->
+    <div class="screen active" id="screenName">
+        <div class="name-card">
+            <div class="name-emo">👷‍♂️</div>
+            <div class="name-ttl">Welcome Maintenance Heroes!</div>
+            <div class="name-sub">Welcome to King Salman Specialist Hospital stars! <br>Enter your name to join the hall of heroes 🏆</div>
+            <input class="name-in" id="nameIn" type="text" placeholder="Enter your name here..." maxlength="25" oninput="checkName()" onkeydown="if(event.key==='Enter')tryStart()">
+            <div class="name-hint">Max 25 characters</div>
+            <div class="rules-box">
+                <div class="rule"><div class="rule-ico">1️⃣</div><span>5 different disaster scenarios each playthrough!</span></div>
+                <div class="rule"><div class="rule-ico">2️⃣</div><span>Choose the correct solution from 3 options — use your brain!</span></div>
+                <div class="rule"><div class="rule-ico">3️⃣</div><span>Each wrong answer raises the chaos meter — be careful! 🚨</span></div>
+                <div class="rule"><div class="rule-ico">4️⃣</div><span>Your score goes to the Hall of Fame 🏅</span></div>
+            </div>
+            <button class="start-btn" id="startBtn" onclick="startGame()" disabled>Start Game!</button>
+        </div>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div class="screen" id="screenGame">
+        <div class="score-panel">
+            <div class="sc sc-b"><div class="l">Player</div><div class="v" id="pName">-</div></div>
+            <div class="sc sc-g"><div class="l">Correct</div><div class="v" id="corrCnt">0</div></div>
+            <div class="sc sc-y"><div class="l">Scenario</div><div class="v" id="scNum">1/5</div></div>
+        </div>
+
+        <div class="chaos-sec">
+            <div class="chaos-hdr">
+                <div class="chaos-lbl">Chaos Meter</div>
+                <div class="chaos-pct" id="chaosPct">0%</div>
+            </div>
+            <div class="chaos-bg"><div class="chaos-fill" id="chaosBar" style="width:0%;background:var(--green)"></div></div>
+            <div class="chaos-emos">
+                <span class="ce" id="ce0">😊</span><span class="ce" id="ce1">🙂</span><span class="ce" id="ce2">😬</span><span class="ce" id="ce3">😱</span><span class="ce" id="ce4">💥</span>
+            </div>
+        </div>
+
+        <div class="calert" id="chaosAlert">
+            <div style="font-size:50px;margin-bottom:12px;">🚨</div>
+            <div style="font-size:20px;font-weight:900;color:var(--red);margin-bottom:8px;">Emergency Engr Called!</div>
+            <div style="font-size:14px;color:var(--muted);font-weight:700;line-height:1.6;">Chaos meter reached maximum!<br>The clinic turned into a horror movie!</div>
+        </div>
+
+        <div class="pdots" id="pdots">
+            <div class="dot active" id="dot0"></div>
+            <div class="dot" id="dot1"></div>
+            <div class="dot" id="dot2"></div>
+            <div class="dot" id="dot3"></div>
+            <div class="dot" id="dot4"></div>
+        </div>
+
+        <div class="sc-card" id="scCard">
+            <div class="sc-badge" id="scBadge">Scenario 1</div>
+            <span class="sc-emo" id="scEmo">🚨</span>
+            <div class="sc-txt" id="scTxt"></div>
+        </div>
+
+        <div class="opts" id="optsGrid"></div>
+
+        <div class="fb" id="fbCard">
+            <div class="fb-emo" id="fbEmo"></div>
+            <div class="fb-com" id="fbCom"></div>
+            <div class="fb-tip"><span>💡</span><span id="fbTipTxt"></span></div>
+        </div>
+
+        <button class="nxt" id="nxtBtn" onclick="nextScenario()">Next</button>
+
+        <div class="end-card" id="endCard">
+            <div class="end-trophy" id="endTrophy">🏆</div>
+            <div class="ttl-badge" id="endTitle"></div>
+            <div style="color:var(--muted);font-size:15px;font-weight:700;margin-bottom:20px;line-height:1.8;" id="endMsg"></div>
+            <div class="end-stats">
+                <div class="estat"><div class="esv esg" id="endC">0</div><div class="esl">Correct</div></div>
+                <div class="estat"><div class="esv esy" id="endF">0</div><div class="esl">Patches</div></div>
+                <div class="estat"><div class="esv esr" id="endD">0</div><div class="esl">Disasters</div></div>
+            </div>
+            <div class="end-tip-box" id="endTip"></div>
+            <div class="end-btns">
+                <button class="replay-btn" onclick="replayGame()">Play Again!</button>
+                <button class="lb-open-btn" onclick="showLeaderboard()">Leaderboard 🏅</button>
+                <button class="share-btn" onclick="shareResult()">Share Result!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LEADERBOARD SCREEN -->
+    <div class="screen" id="screenLB">
+        <div class="lb-card">
+            <div class="lb-hdr">
+                <div class="lb-ico">🏆</div>
+                <div>
+                    <div class="lb-title">Hall of Heroes... & Disasters!</div>
+                    <div class="lb-sub">Maintenance Dept × Disaster Control</div>
+                </div>
+            </div>
+            <div id="lbContent"></div>
+            <button class="back-btn" onclick="backFromLB()">Back to Game</button>
+        </div>
+    </div>
+    
+    <div class="sponsor-footer">
+        <div class="main-sponsor">⚙️ Facilities Management Department ⚙️</div>
+        <div>Sponsored by Mr. Firas Yamani</div>
+        <small>Strategic Partnership for Operational Excellence</small>
+    </div>
+</div>
+
+<script>
+// Game Data - 5 English Scenarios
+const SCENARIOS = [
+    {id:1, emoji:"💧", text:"🚨 <strong>Office AC Emergency:</strong> You're at your desk with patient files when suddenly the AC turns into a 'waterfall' pouring water on sensitive medical records! Water everywhere, papers soaking fast. What do you do hero?",
+     options:[
+        {type:"smart", text:"Place a bucket or plastic bag immediately under the leak, move files to a dry area, call maintenance with exact location & leak description"},
+        {type:"funny", text:"Get medical tape from the clinic and stick it over the AC vent, spread tissues on the files to absorb water 😂"},
+        {type:"bad", text:"Turn off the AC, open the cover and poke the wet wires with bare hands — I can fix it! ⚡💦"}
+     ],
+     feedbacks:{smart:{emoji:"✅", comment:"Well done! 🎉 True maintenance pro in admin clothes! Protected sensitive medical files & reported properly!", tip:"Quick protection + precise reporting prevents patient data loss & bigger damage."},
+                funny:{emoji:"😂", comment:"Medical tape?! 😂 That's an AC unit not a finger cut! Maintenance says: just call us!", tip:"Temporary fixes hide problems. Precise reporting is always the right answer."},
+                bad:{emoji:"🚫", comment:"STOP!! ⚠️ Water + electricity = guaranteed shock + fire! Your safety > AC unit!", tip:"🚨 NEVER touch wet electrical devices! Disconnect main power & report immediately."}}},
+    {id:2, emoji:"🔌", text:"🔥 <strong>Dangerous Electrical Spark:</strong> During busy shift, your computer plug sparks yellow-orange with burning plastic smell! Computer shuts down, smoke visible. Whole department sees, patients waiting nearby. First step?",
+     options:[
+        {type:"smart", text:"Clear everyone from the area immediately, report to electrical maintenance with details, notify floor supervisor — DON'T touch the plug"},
+        {type:"funny", text:"Get a wet towel from the bathroom to extinguish the spark, then pull the plug with the towel as an 'insulator' 🛁💦"},
+        {type:"bad", text:"Plug the burning plug into a backup computer to test if the plug is the problem! 🔌🔥"}
+     ],
+     feedbacks:{smart:{emoji:"✅", comment:"Perfect! 👏 True hero! Cleared the area safely and reported to specialists precisely.", tip:"🔌 Electrical spark: Clear area, NO water, report to electrical maintenance + supervisor."},
+                funny:{emoji:"😂", comment:"Wet towel on electricity?! 💦⚡ Water conducts electricity, hero! Your life > plug!", tip:"🚫 NEVER use water on electrical fires! Water conducts and can be fatal."},
+                bad:{emoji:"🚫", comment:"Plug the burning plug into another computer?! 😱 Two devices down instead of one! This is an office, not a lab!", tip:"🔥 Never reuse burnt components. Electrical fires need a certified specialist."}}},
+    {id:3, emoji:"🚪", text:"🏥 <strong>Exam Room Door Squeaking:</strong> Doctor in the middle of an important patient exam when the exam room door starts a loud 'CREEEAK' noise! Patient annoyed, doctor staring at YOU! Sensitive medical exam. What do you do?",
+     options:[
+        {type:"smart", text:"Log a maintenance ticket after the exam, notify my supervisor for a specialist Engr, reassure the doctor"},
+        {type:"funny", text:"Get olive oil from the staff cafeteria and lubricate the hinge during the exam 🥄🛢️"},
+        {type:"bad", text:"Unscrew the entire door hinge with a screwdriver, leave the door hanging to stop the noise! 🔧🚪"}
+     ],
+     feedbacks:{smart:{emoji:"✅", comment:"Excellent! 👨‍⚕️ Knew patient exam safety comes first, proper official reporting!", tip:"📋 Official system logging ensures problem documentation & follow-up."},
+                funny:{emoji:"😂", comment:"Olive oil?! 😅 That's an exam room door, not a salad! The doctor will kick you out with the oil!", tip:"🛢️ Improvised materials can damage hinges more. Official reporting = permanent fix."},
+                bad:{emoji:"🚫", comment:"Removed the door?! 😱 Now the exam room has no door, the whole hallway sees the patient! Privacy??", tip:"🚪 Never disassemble hospital doors or equipment without authorization."}}},
+    {id:4, emoji:"🩸", text:"🧪 <strong>Hazardous Chemical Spill:</strong> A strong disinfectant has spilled in the patient corridor! Strong fumes, slippery floor, patients and children are nearby. What's your first action?",
+     options:[
+        {type:"smart", text:"Immediately cordon off the area, prevent anyone from passing, notify the safety team and emergency maintenance with the chemical name"},
+        {type:"funny", text:"Grab a regular mop and quickly clean it up before anyone notices 🧹"},
+        {type:"bad", text:"Try to collect the chemical with my bare hands without gloves and throw it in a regular trash bin"}
+     ],
+     feedbacks:{smart:{emoji:"✅", comment:"High awareness! 🛡️ Isolating the area and protecting patients first, then reporting to specialists is 100% the correct protocol!", tip:"⚠️ Chemical spills require a specialized team for safe handling and cleanup."},
+                funny:{emoji:"😂", comment:"A regular mop?! 😅 Strong chemicals can react with the mop and create toxic fumes!", tip:"Never use non-specialized tools with chemical spills."},
+                bad:{emoji:"🚫", comment:"I admire your courage, but that's wrong! 😱 Chemicals can burn your skin and cause poisoning!", tip:"Protect yourself first: stay away and report to specialists. Never touch chemicals without PPE."}}},
+    {id:5, emoji:"💨", text:"🔥 <strong>Strong Gas Smell:</strong> Suddenly, a strong gas smell spreads near the main kitchen. Patients are coughing, and management is in a panic. There might be a dangerous gas leak! What do you do?",
+     options:[
+        {type:"smart", text:"Order immediate evacuation of the area, open windows for ventilation, prevent anyone from using electricity or lighters, and call civil defense & maintenance"},
+        {type:"funny", text:"Bring air freshener to mask the smell 🌸"},
+        {type:"bad", text:"Use a small lighter to check if there's actually gas or not! 🔥"}
+     ],
+     feedbacks:{smart:{emoji:"✅", comment:"Hero! 👏 This is the 100% correct response! Evacuation + ventilation + preventing ignition sources = saving lives!", tip:"⛔ Natural gas: Do not turn on any electrical devices, do not use lighters, evacuate immediately and call emergency services."},
+                funny:{emoji:"😂", comment:"Air freshener with a gas smell?! 😅 That makes the disaster worse, my friend!", tip:"Never try to hide a gas smell — it's extremely dangerous and delays evacuation."},
+                bad:{emoji:"💥", comment:"NOOOOO! 🔥💣 A lighter with gas present will cause an explosion that could level the hospital! Leave the acting to the movies!", tip:"🚨 Any spark can cause a massive explosion. Evacuate immediately and call specialists."}}}
+];
+
+let G = {name: '', idx: 0, sessionUsed: [], scenarios: [], chaos: 0, correct: 0, funny: 0, bad: 0, answered: false};
+
+function loadLB(){try{return JSON.parse(localStorage.getItem('ksmc_lb_en')) || [];}catch{return[];}}
+function saveLB(d){localStorage.setItem('ksmc_lb_en', JSON.stringify(d));}
+function addLB(name, correct, title){let lb=loadLB(); lb.push({name,correct,title,ts:Date.now()}); lb.sort((a,b)=>b.correct-a.correct||b.ts-a.ts); saveLB(lb.slice(0,50));}
+
+function pickScenarios(){
+    let avail = SCENARIOS.filter(s=>!G.sessionUsed.includes(s.id));
+    if(avail.length<5){ G.sessionUsed=[]; avail=SCENARIOS.slice(); }
+    let picked = avail.sort(()=>Math.random()-.5).slice(0,5);
+    picked.forEach(s=>G.sessionUsed.push(s.id));
+    return picked;
+}
+
+function startGame(){
+    G.name = document.getElementById('nameIn').value.trim();
+    G.idx=0; G.chaos=0; G.correct=0; G.funny=0; G.bad=0; G.answered=false;
+    G.scenarios = pickScenarios();
+    document.getElementById('pName').textContent = G.name;
+    showScreen('screenGame');
+    document.getElementById('endCard').className='end-card';
+    document.getElementById('chaosAlert').className='calert';
+    document.getElementById('scCard').style.display='block';
+    document.getElementById('optsGrid').style.display='flex';
+    document.getElementById('pdots').style.display='flex';
+    updaEngraos();
+    renderScenario();
+}
+
+function renderScenario(){
+    let sc = G.scenarios[G.idx];
+    G.answered=false;
+    document.getElementById('scEmo').textContent = sc.emoji;
+    document.getElementById('scTxt').innerHTML = sc.text;
+    document.getElementById('scBadge').textContent = `Scenario ${G.idx+1}`;
+    document.getElementById('scNum').textContent = (G.idx+1)+'/5';
+    document.getElementById('corrCnt').textContent = G.correct;
+    updateDots();
+    let shuffled = sc.options.slice().sort(()=>Math.random()-.5);
+    let grid = document.getElementById('optsGrid');
+    grid.innerHTML = '';
+    let nums = ['1', '2', '3'];
+    shuffled.forEach((opt,i)=>{
+        let btn = document.createElement('button');
+        btn.className = 'opt';
+        btn.innerHTML = `<div class="opt-num">${nums[i]}</div><div>${opt.text}</div>`;
+        btn.onclick = () => answerQ(opt.type, i, shuffled);
+        grid.appendChild(btn);
+    });
+    document.getElementById('fbCard').className = 'fb';
+    document.getElementById('nxtBtn').className = 'nxt';
+    document.getElementById('chaosAlert').className = 'calert';
+}
+
+function answerQ(type, ci, shuffled){
+    if(G.answered) return;
+    G.answered=true;
+    let sc = G.scenarios[G.idx];
+    let btns = document.querySelectorAll('.opt');
+    btns.forEach(b=>b.disabled=true);
+    let smartIdx = shuffled.findIndex(o=>o.type==='smart');
+    if(type==='smart'){
+        btns[ci].classList.add('ok');
+        G.correct++;
+    } else {
+        btns[ci].classList.add('ng');
+        btns[smartIdx].classList.add('ok');
+        G.chaos = Math.min(G.chaos+34, 100);
+        if(type==='funny') G.funny++; else G.bad++;
+    }
+    updaEngraos();
+    document.getElementById('corrCnt').textContent = G.correct;
+    if(G.chaos>=100){
+        document.getElementById('chaosAlert').className = 'calert show';
+    }
+    let fb = sc.feedbacks[type];
+    document.getElementById('fbEmo').textContent = fb.emoji;
+    document.getElementById('fbCom').textContent = fb.comment;
+    document.getElementById('fbTipTxt').textContent = fb.tip;
+    document.getElementById('fbCard').className = `fb show ${type==='smart'?'fb-ok':'fb-ng'}`;
+    document.getElementById('nxtBtn').className = 'nxt show';
+}
+
+function nextScenario(){
+    G.idx++;
+    if(G.idx>=5) showEnd();
+    else { renderScenario(); window.scrollTo({top:0,behavior:'smooth'}); }
+}
+
+const TITLES = {
+    perfect: {t:"🏆 Maintenance Legend!", trophy:"👑", msg:"5/5 Perfect! You are a true preventive maintenance hero!", tip:"Your mastery of official procedures protects patients and staff!"},
+    good: {t:"⭐ Maintenance Star!", trophy:"🏅", msg:"Excellent! 4/5 correct answers. Close to professional perfection!", tip:"Keep applying correct procedures and be a role model for colleagues."},
+    mid: {t:"🔥 Promising Talent!", trophy:"🔥", msg:"Very good performance! With continuous training, you'll become an expert", tip:"Smart solutions + immediate reporting are the keys to success."},
+    patchy: {t:"🩹 Patch Engineer!", trophy:"🩹", msg:"Your creativity solves problems temporarily, but official solutions are better", tip:"Patching hides defects, official reporting solves root causes."},
+    disaster: {t:"💥 Disaster King!", trophy:"💥", msg:"Oh my! Maintenance requested a vacation!\nWe need intensive training!", tip:"We learn from every mistake. Focus on immediate reporting and avoid rushing."},
+    mixed: {t:"🎢 The Adventurer!", trophy:"🎢", msg:"A mix of correct, patches, and disasters! An exciting journey!", tip:"Follow official procedures and you'll achieve perfect results."}
+};
+
+function showEnd(){
+    document.getElementById('scCard').style.display='none';
+    document.getElementById('optsGrid').style.display='none';
+    document.getElementById('fbCard').className='fb';
+    document.getElementById('nxtBtn').className='nxt';
+    document.getElementById('pdots').style.display='none';
+    let c=G.correct, f=G.funny, b=G.bad, td;
+    if(c===5) td=TITLES.perfect;
+    else if(c===4 && b===0) td=TITLES.good;
+    else if(c>=3) td=TITLES.mid;
+    else if(f>=3) td=TITLES.patchy;
+    else if(b>=3) td=TITLES.disaster;
+    else td=TITLES.mixed;
+    document.getElementById('endTrophy').textContent=td.trophy;
+    document.getElementById('endTitle').textContent=td.t;
+    document.getElementById('endMsg').textContent=td.msg;
+    document.getElementById('endC').textContent=c;
+    document.getElementById('endF').textContent=f;
+    document.getElementById('endD').textContent=b;
+    document.getElementById('endTip').innerHTML='💡 '+td.tip;
+    document.getElementById('endCard').className='end-card show';
+    addLB(G.name, c, td.t);
+    window.scrollTo({top:0});
+}
+
+function replayGame(){
+    G.idx=0; G.chaos=0; G.correct=0; G.funny=0; G.bad=0; G.answered=false;
+    G.scenarios = pickScenarios();
+    document.getElementById('scCard').style.display='block';
+    document.getElementById('optsGrid').style.display='flex';
+    document.getElementById('pdots').style.display='flex';
+    document.getElementById('endCard').className='end-card';
+    document.getElementById('chaosAlert').className='calert';
+    updaEngraos();
+    renderScenario();
+    window.scrollTo({top:0});
+}
+
+function shareResult(){
+    let score = `${G.correct}/5`;
+    let text = `🏥 Scored ${score} in 'Maintenance Engr Day' game - King Salman Hospital! ${G.name}`;
+    if(navigator.share){
+        navigator.share({title:'My Maintenance Game Score', text:text});
+    } else {
+        navigator.clipboard.writeText(text).then(()=>alert('Result copied! Share with colleagues 📋'));
+    }
+}
+
+function showLeaderboard(){
+    let lb = loadLB();
+    let ranks = ['🥇', '🥈', '🥉'];
+    let html = lb.length===0 ? `<div class="lb-empty"><div class="lb-empty-emo">🏆</div><div>No heroes yet.. Be the first!</div></div>`
+        : lb.map((e,i)=>`<div class="lb-row${e.name===G.name?' me':''}"><div class="lb-rank">${i<3?ranks[i]:i+1}</div><div class="lb-info"><div class="lb-name">${e.name}${e.name===G.name?' (You)':''}</div><div class="lb-meta">${e.title} · ${new Date(e.ts).toLocaleDateString('en-US')}</div></div><div class="lb-score-box"><div class="lb-snum">${e.correct}/5</div><div class="lb-slbl">Correct</div></div></div>`).join('');
+    document.getElementById('lbContent').innerHTML = html;
+    showScreen('screenLB');
+}
+
+function backFromLB(){ showScreen('screenGame'); }
+
+function updaEngraos(){
+    let p = Math.min(G.chaos,100);
+    let col = p<34?'var(--green)':p<67?'var(--yellow)':p<90?'#ff6d00':'var(--red)';
+    document.getElementById('chaosBar').style.width = p+'%';
+    document.getElementById('chaosBar').style.background = col;
+    document.getElementById('chaosPct').style.color = col;
+    document.getElementById('chaosPct').textContent = Math.round(p)+'%';
+    let ai = Math.floor(p/20);
+    for(let i=0;i<5;i++){
+        let e = document.getElementById('ce'+i);
+        if(p>0 && i<=ai) e.classList.add('on');
+        else e.classList.remove('on');
+    }
+}
+
+function updateDots(){
+    for(let i=0;i<5;i++){
+        let d = document.getElementById('dot'+i);
+        d.className = 'dot';
+        if(i<G.idx) d.classList.add('done');
+        else if(i===G.idx) d.classList.add('active');
+    }
+}
+
+function showScreen(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+function checkName(){
+    document.getElementById('startBtn').disabled = document.getElementById('nameIn').value.trim().length<2;
+}
+function tryStart(){
+    if(document.getElementById('nameIn').value.trim().length>=2) startGame();
+}
+
+window.onload = () => {
+    for(let i=0;i<30;i++){
+        let p = document.createElement('div');
+        p.className = 'particle';
+        p.style.cssText = `left:${Math.random()*100}%;animation-duration:${5+Math.random()*10}s;animation-delay:${Math.random()*10}s;width:${1+Math.random()*4}px;height:${1+Math.random()*4}px;--dx:${(Math.random()-.5)*300}px;opacity:${.3+Math.random()*.4};background:${['var(--blue)','var(--green)','var(--purple)'][Math.floor(Math.random()*3)]}`;
+        document.getElementById('particles').appendChild(p);
+    }
+    checkName();
+};
+</script>
+</body>
+</html>
